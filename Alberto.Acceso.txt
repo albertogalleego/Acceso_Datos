@@ -1,0 +1,103 @@
+Vemos el framework de angular con el diseño y su teamplate.
+
+descargamos desde google node.
+
+ Visual studio.terminal. npm install -g @angular/cli@latest ponemos eso en la terminal.
+
+Despues creamos localmente en c una carpeta con nombre Dam
+ cd c:\DAM2
+ dir
+ ng new frontend
+N
+n
+CSS
+y quedaria instalado
+
+ahora abrimos una nueva terminal. Para ello, vamos a la pestaña de Terminal. escribimos frontend
+ng serve
+y despues vamos a google y escribimos localhost:4200. Con esto tenemos arrancado el servidor de la parte frontend de nuestro node.
+
+de extensiones: angular 2 type script y cogemos el primero de 352 k y el tercero de 2.3 millones de descarga(digo a ojo aprxxoimando el numero de descargas)
+
+Despues ng serve -o
+
+import { platformBrowserDynamic } from '@angular/platform-browser-dynamic'; esto es una depedencia de libreria externa NO TOCARLO
+
+Esto es llamada a elementos dentro de nuestra carpeta src, en app
+import { AppModule } from './app/app.module';
+
+
+platformBrowserDynamic().bootstrapModule(AppModule)
+  .catch(err => console.error(err));
+
+en app.module carga todo las dependencias, y carga la aplicacion es bastante importante esta dentro de la carpeta app. estas dependencias sirven para formar nodos de angular, ese primero que vemos lo tienen todos los componentes . 
+Los componenetes son pequeñas partes del codigo de la web como el cuerpo princiipal, el footer, header etc.Todos tienen una parte de html que es la parte visual llamadas teamplates y otra parte de logica/operativa que se creara una clase para la parte operativa.
+La parte app.compontent.html es puro css y html 
+
+
+lo jodido es app.component.ts
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent {
+  title = 'frontend';
+}
+
+Aqui para crear un componenete creamos ng component ciudades dentro de la carpeta frontend, debemos usar este comando por consola.
+
+En ciudades.componente.html.<app-ciudades></app-ciudades> escribimos esto. Todos los componentes estan compuestos por el selector y por el nombre dle componente, tiene el nombre de la vista
+
+ahora vamos a componente.ciudades.ts la primera linea importa la primera linea de angular:
+Segunda linea del @componente con el decorador compoente que importamos nos da este decorador y contiene el nombre del compoennete app root, donde esta la vista del teamplateURL, y la tercera CSS
+
+La clase es el controlador de esa plantilla que envia informacion al modelo del componente y el modelo devuelve informacion a la plantilla.
+
+Una carpeta que tenga todos los TP y todas las vistas de forma global a todos los componentes
+Otra carpeta que la vista tenga cosas especificas segun trabajemos. 
+
+
+
+IMPORTANTE 
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'ciudades',
+  template: 
+  `<h1> {{nombre_componente}} </h1>
+  <p> {{listado_ciudad}} </p>`
+
+
+})
+export class CiudadesComponent {
+
+  public nombre_componente='Componente de ciudades';
+  public listado_ciudad= 'Salamaca,Zamora,MAdrid y BCN';
+
+}
+Esto es la llamada de nuestras variables en ciudades.component.ts
+
+Esto es la app.compoente.html para que coja todo lo que tiene el typescript
+<ciudades>ciudades</ciudades>
+
+
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'paises',
+  template:
+  `<h1> {{nombre_componente}} </h1>
+  <p> {{listado_ciudad}} </p>`
+})
+export class PaisesComponent {
+
+  public nombre_componente='Componente de paises';
+  public listado_ciudad= 'España, Italia Y Francia';
+
+}
+
+En el servidor aparecera componente de paises como titulo y debajo aparece españa italia y francoa
+
