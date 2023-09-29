@@ -1,0 +1,21 @@
+<h1>
+    EMPLEADOS
+    <ul *ngFor="let empleado of trabajadores">
+        <ul>
+
+            {{empleado.nombre}} -
+            {{empleado.cargo}} -
+
+            <ul *ngIf="empleado.marketing == true">
+                Pertenece a Marketing
+            </ul>
+            <ul *ngIf="empleado.marketing == false">
+                NO Pertenece a Marketing
+            </ul>
+
+            <br>
+        </ul>
+
+    </ul>
+
+</h1>
