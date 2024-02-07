@@ -1,0 +1,108 @@
+  
+Filezilla server vamos a pestaña server=>configure=>a la izquierda picamos en users y escribimos en available suers el nombre y a la derecha la contraseña y en virtual path ponemos esto: / y en native path la ruta de la carpeta donde queremos que se conecte remotamente pulsamos add, despues apply y despues ok
+
+A continacion vamos a filezilla cliente y ponemos: 
+Dirección IPv4. . . . . . . . . . . . . . : 172.30.2.106 en adpatador de lan inalambrico
+voy a filezilla cliente copio esa ip 172.30.2.106 coloco nombre pepito contraseña pepito y puerto no pongo nada 
+y a la derecha abajo veo los ficheros que hay entonces puedo arrastrar cualquier cosa mia de mi ordenador y ponerlo en esa cosa que vemos a la derecha
+
+en java Creamos un nuevo proyecto y en el main escribimos esto:
+import org.apache.commons.net.ftp.FTPClient;
+import org.apache.commons.net.ftp.FTPFile;
+
+import java.io.IOException;
+
+public class Main {
+    public static void main(String[] args) throws IOException {
+
+        FTPClient ftp= new FTPClient();
+        try {
+            ftp.connect("172.30.2.106");
+            ftp.login("pepito","pepito");
+            FTPFile[] list=ftp.listFiles(); //me devuelve una lista
+            for (FTPFile ftpFile : list) {
+                System.out.println(ftpFile.getName());
+            }//esto me imprime el array del contenido que yo he subido en esa carpeta que teniamos en filezilla CLIENTE
+
+            System.out.println(ftp.getReplyString());
+            ftp.disconnect();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+
+    }
+}
+
+
+
+
+
+
+
+
+
+-------------------------------------------------------------------------
+ENCRIPTAR MENSAJE EN SHA-256 METIMOS UN HOLA Y EL RESULTADO FUE ESTE:
+e633f4fc79badea1dc5db970cf397c8248bac47cc3acf9915ba60b5d76b0e88f
+
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+@SuppressWarnings("SpellChecinkInspection") //esto para  si usamos palabras española lo traduce en ingles
+public class Main {
+    public static void main(String[] args) throws NoSuchAlgorithmException {
+    //eEsto permite obtener el resusemn de nuestro algortimo
+        MessageDigest resumen= MessageDigest.getInstance("SHA-256");
+        System.out.println(resumen.getAlgorithm());
+
+        //AHORA CREAMOS EL HASH QUE SERA UN ARRAY DE BYTES
+
+        byte[] mensaje="Hola".getBytes();
+        //ahora introducimos el mensaje donde queremos introducir el hash
+        resumen.update(mensaje);
+        //ahora hacemos la conversion del algortimo, TRANSFORMAMOS AHORA CON EL METODO resumen.digest()
+      byte resumenEncriptadoSha256 []=  resumen.digest();//con esto devuelve un arry de bytes
+
+
+        //-1 negativo,0 cero,1 positvio
+        BigInteger number = new BigInteger(1,resumenEncriptadoSha256);
+        System.out.println(number.toString(16));
+
+    }
+}
+----------------------------------------------------------------------------
+ENCRIPTAR EL MENSAJE CON AES EL RESULTADO FUE ESTE:srwkf5C1U5dddUntVSaJHQOwm03dUIrE6G387qiTznA=
+POR LO CUAL QUEREMOS ENCRIPTAR ESTE MENSAJE         String mensaje="Hola estamos en clase de DAM";
+Y LA CLAVE SECRETA PARA HACER LA ENCRIPTACION         String claveSecreta="PepitoYJuanito24"; //debemos meter una contraseña de 16 caracteres
+
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.spec.SecretKeySpec;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+
+@SuppressWarnings("SpellCheckingInspection")
+public class SYMETRICTEST {
+    public static void main(String[] args) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
+        String mensaje="Hola estamos en clase de DAM";
+        String claveSecreta="PepitoYJuanito24"; //debemos meter una contraseña de 16 caracteres
+
+        Cipher cipher = Cipher.getInstance("AES");
+
+        //creamos la clave para un tipo de dato especial de claves
+        SecretKeySpec secretKeySpec= new SecretKeySpec(claveSecreta.getBytes(),"AES");
+
+        //inicializamos la encriptacion con la clave que vamos a emplear
+        cipher.init(Cipher.ENCRYPT_MODE,secretKeySpec);
+        //y ahora ciframos o descifra
+        byte[] mensajeCifrado=cipher.doFinal(mensaje.getBytes());
+        System.out.println("Texto cifrado en BASE 64: "+java.util.Base64.getEncoder().encodeToString(mensajeCifrado));
+    }
+}
+
+--------------------------------
+Primero arrcanmos el servidor cliente, despues arrancamos el main cliente y escribimos en el outut de cliente y en el outpuut del servidor veremos lo que escribio el cliente
