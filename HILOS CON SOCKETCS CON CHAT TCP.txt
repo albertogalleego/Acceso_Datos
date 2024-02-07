@@ -1,0 +1,138 @@
+HILOS CON SOCKETCS CON CHAT TCP
+
+---------------------------
+CLIENTE MAIN
+import java.io.*;
+import java.net.Socket;
+import java.util.Scanner;
+
+public class Client {
+    public static void main(String[] args){
+        final Socket clientSocket; // socket used by client to send and receive data from server
+        final Scanner sc = new Scanner(System.in); // object to read data from user's keyboard
+        try {
+            clientSocket = new Socket("127.0.0.1",5000);
+
+            // obtaining input and out streams
+            DataInputStream dis = new DataInputStream(clientSocket.getInputStream());
+            DataOutputStream dos = new DataOutputStream(clientSocket.getOutputStream());
+
+            SendData sendData = new SendData(clientSocket,dos,sc);
+            sendData.start();
+
+            ReceiveData receiveData = new ReceiveData(clientSocket,dis);
+            receiveData.start();
+
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+    }
+}
+--------------------------------------------------
+ENVIAR DATO 
+//
+// Source code recreated from a .class file by IntelliJ IDEA
+// (powered by FernFlower decompiler)
+//
+
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.net.Socket;
+import java.util.Scanner;
+
+public class SendData extends Thread {
+    Socket s;
+    DataOutputStream dos;
+    Scanner sc;
+    String msg;
+
+    SendData(Socket s, DataOutputStream dos, Scanner sc) {
+        this.s = s;
+        this.dos = dos;
+        this.sc = sc;
+    }
+
+    public void run() {
+        while(true) {
+            this.msg = this.sc.nextLine();
+
+            try {
+                this.dos.writeUTF(this.msg);
+                this.dos.flush();
+            } catch (IOException var2) {
+                throw new RuntimeException(var2);
+            }
+        }
+    }
+}
+------------------------------------------------------
+RECIBIR DATO
+//
+// Source code recreated from a .class file by IntelliJ IDEA
+// (powered by FernFlower decompiler)
+//
+
+import java.io.DataInputStream;
+import java.io.IOException;
+import java.net.Socket;
+import java.util.Scanner;
+
+public class ReceiveData extends Thread {
+    Socket s;
+    DataInputStream dis;
+    Scanner sc;
+    String msg;
+
+    ReceiveData(Socket s, DataInputStream dis) {
+        this.s = s;
+        this.dis = dis;
+    }
+
+    public void run() {
+        try {
+            for(this.msg = this.dis.readUTF(); this.msg != null; this.msg = this.dis.readUTF()) {
+                System.out.println(this.msg);
+            }
+        } catch (IOException var2) {
+            var2.printStackTrace();
+        }
+
+    }
+}
+
+--------------------------------
+MAIN SERVIDOR
+//
+// Source code recreated from a .class file by IntelliJ IDEA
+// (powered by FernFlower decompiler)
+//
+
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.Scanner;
+
+public class Server {
+    public Server() {
+    }
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+
+        try {
+            ServerSocket serverSocket = new ServerSocket(5000);
+            Socket clientSocket = serverSocket.accept();
+            DataInputStream dis = new DataInputStream(clientSocket.getInputStream());
+            DataOutputStream dos = new DataOutputStream(clientSocket.getOutputStream());
+            SendData sendData = new SendData(clientSocket, dos, sc);
+            sendData.start();
+            ReceiveData receiveData = new ReceiveData(clientSocket, dis);
+            receiveData.start();
+        } catch (IOException var8) {
+            var8.printStackTrace();
+        }
+
+    }
+}
